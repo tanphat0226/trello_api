@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
+import { boardService } from '~/services/boardService'
 
 const createNew = async (req, res, next) => {
   try {
@@ -8,9 +9,10 @@ const createNew = async (req, res, next) => {
     // console.log(req.filess)
 
     // Điều hướng data sang tầng service
-    // throw new ApiError(StatusCodes.BAD_GATEWAY, 'phamphat test message')
+    const createdNewBoard = await boardService.createNew(req.body)
+
     // Có kết quả thì trả về phía Client
-    res.status(StatusCodes.CREATED).json({ message: 'POST from Validation: APIs create new boards.' })
+    res.status(StatusCodes.CREATED).json(createdNewBoard)
   } catch (error) { next(error) }
 }
 
