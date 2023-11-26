@@ -1,7 +1,4 @@
 /**
- * YouTube: TrungQuanDev - Một Lập Trình Viên
-
-/**
  * Simple method to Convert a String to Slug
  * Reference: https://byby.dev/js-slugify-string
  */
