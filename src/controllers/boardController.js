@@ -9,10 +9,10 @@ const createNew = async (req, res, next) => {
     // console.log(req.filess)
 
     // Điều hướng data sang tầng service
-    const createdNewBoard = await boardService.createNew(req.body)
+    const createdBoard = await boardService.createNew(req.body)
 
     // Có kết quả thì trả về phía Client
-    res.status(StatusCodes.CREATED).json(createdNewBoard)
+    res.status(StatusCodes.CREATED).json(createdBoard)
   } catch (error) { next(error) }
 }
 
