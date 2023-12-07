@@ -5,7 +5,6 @@ import { BOARD_TYPES } from '~/utils/constants'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 import { columnModel } from './columnModel'
 import { cardModel } from './cardModel'
-import { async } from '@babel/runtime/helpers/regeneratorRuntime'
 
 // Define Collection (name & schema)
 const BOARD_COLLECTION_NAME = 'boards'
