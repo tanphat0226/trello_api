@@ -4,6 +4,8 @@ import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
+import { columnModel } from '~/models/columnModel'
+import { cardModel } from '~/models/cardModel'
 
 const createNew = async (reqBody) => {
   try {
@@ -56,8 +58,44 @@ const getDetails = async (boardId) => {
   } catch (error) { throw error }
 }
 
+const update = async (boardId, reqBody) => {
+  try {
+    const updateData = {
+      ...reqBody,
+      updatedAt: Date.now()
+    }
+
+    const updatedBoard = await boardModel.update(boardId, updateData)
+
+    return updatedBoard
+  } catch (error) { throw error }
+}
+
+const moveCardToDifferentColumn = async (reqBody) => {
+  try {
+    // Step 1: Update cardOrderIds of the original column (remove the card _id from the array)
+    await columnModel.update(reqBody.prevColumnId, {
+      cardOrderIds: reqBody.prevCardOrderIds,
+      updatedAt: Date.now()
+    })
+    // Step 2: Update cardOrderIds of the next column (add the card _id from the array)
+    await columnModel.update(reqBody.nextColoumId, {
+      cardOrderIds: reqBody.nextCardOrderIds,
+      updatedAt: Date.now()
+    })
+    // Step 3: Update the new columnId of the dragged card
+    await cardModel.update(reqBody.currentCardId, {
+      columnId: reqBody.nextColoumId,
+      updatedAt: Date.now()
+    })
+
+    return { updateResult: 'Successfully!' }
+  } catch (error) { throw error }
+}
 
 export const boardService = {
   createNew,
-  getDetails
+  getDetails,
+  update,
+  moveCardToDifferentColumn
 }
