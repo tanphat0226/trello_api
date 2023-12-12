@@ -23,9 +23,18 @@ const START_SERVER = () => {
   // Middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware)
 
-  app.listen(env.APP_PORT, env.APP_HOST, () => {
-    console.log(`3. Hello ${env.AUTHOR}, I am running at http://${env.APP_HOST}:${env.APP_PORT}/`)
-  })
+  // Production Environment (Render.com)
+  if (env.BUILD_MODE === 'production') {
+    app.listen(process.env.PORT, () => {
+      console.log(`3. Production: Hello ${env.AUTHOR}, I am running at ${process.env.PORT}/`)
+    })
+  } else {
+    // Dev Environment
+    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+      console.log(`3. Local Dev: Hello ${env.AUTHOR}, I am running at  http://${env.LOCAL_DEV_APP_HOST}: ${process.env.PORT}/`)
+    })
+  }
+
 
 
   // Thực hiện các tác vụ clean up trước khi dừng server
