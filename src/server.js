@@ -36,7 +36,6 @@ const START_SERVER = () => {
   }
 
 
-
   // Thực hiện các tác vụ clean up trước khi dừng server
   // https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
   exitHook(() => {

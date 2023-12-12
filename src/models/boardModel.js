@@ -67,7 +67,7 @@ const getDetails = async (id) => {
         as: 'cards'
       } }
     ]).toArray()
-    return result[0] || null
+    return result[0]
   } catch (error) { throw new Error(error) }
 }
 
