@@ -26,7 +26,7 @@ const START_SERVER = () => {
   // Production Environment (Render.com)
   if (env.BUILD_MODE === 'production') {
     app.listen(process.env.PORT, () => {
-      console.log(`3. Production: Hello ${env.AUTHOR}, I am running at ${process.env.PORT}/`)
+      console.log(`3. Production: Back-end Server is running successfully at ${process.env.PORT}`)
     })
   } else {
     // Dev Environment
