@@ -1934,6 +1934,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bcryptjs@npm:2.4.3":
+  version: 2.4.3
+  resolution: "bcryptjs@npm:2.4.3"
+  checksum: b969467087ed7a01ff905a1c6a0c45014ec586248a448ea08370c8ed8bb314bda16a870ca23e0961d7d23bdce1a04c76fa70a9d680be814fa9ac7d8fc61870a3
+  languageName: node
+  linkType: hard
+
 "binary-extensions@npm:^2.0.0":
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
@@ -3999,6 +4006,7 @@ __metadata:
     "@babel/runtime": "npm:^7.22.10"
     async-exit-hook: "npm:^2.0.1"
     babel-plugin-module-resolver: "npm:^5.0.0"
+    bcryptjs: "npm:2.4.3"
     cors: "npm:2.8.5"
     cross-env: "npm:7.0.3"
     dotenv: "npm:^16.3.1"
@@ -4009,6 +4017,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     mongodb: "npm:6.0.0"
     nodemon: "npm:^3.0.1"
+    uuid: "npm:9.0.1"
   languageName: unknown
   linkType: soft
 
@@ -5139,6 +5148,15 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 02ba649de1b7ca8854bfe20a82f1dfbdda3fb57a22ab4a8972a63a34553cf7aa51bc9081cf7e001b035b88186d23689d69e71b510e610a09a4c66f68aa95b672
+  languageName: node
+  linkType: hard
+
+"uuid@npm:9.0.1":
+  version: 9.0.1
+  resolution: "uuid@npm:9.0.1"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 1607dd32ac7fc22f2d8f77051e6a64845c9bce5cd3dd8aa0070c074ec73e666a1f63c7b4e0f4bf2bc8b9d59dc85a15e17807446d9d2b17c8485fbc2147b27f9b
   languageName: node
   linkType: hard
 
