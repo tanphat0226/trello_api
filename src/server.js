@@ -31,10 +31,11 @@ const START_SERVER = () => {
   } else {
     // Dev Environment
     app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
-      console.log(`3. Local Dev: Hello ${env.AUTHOR}, I am running at  http://${env.LOCAL_DEV_APP_HOST}: ${process.env.PORT}/`)
+      console.log(
+        `3. Local Dev: Hello ${env.AUTHOR}, I am running at https://${env.LOCAL_DEV_APP_HOST}:${env.LOCAL_DEV_APP_PORT}/`
+      )
     })
   }
-
 
   // Thực hiện các tác vụ clean up trước khi dừng server
   // https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
@@ -46,7 +47,7 @@ const START_SERVER = () => {
 }
 
 // Chỉ khi connect tới Database thành công thì mới Start Server Back-end lên
-(async () => {
+;(async () => {
   try {
     console.log('1. Connecting to MongoDB Cloud Atlas...')
     await CONNECT_DB()
