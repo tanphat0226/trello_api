@@ -7,7 +7,6 @@ import ApiError from '~/utils/ApiError'
 const isAuthorized = async (req, res, next) => {
   // Get accessToken in request header
   const clientAccessToken = req.cookies?.accessToken
-  console.log(clientAccessToken)
 
   // If clientAccessToken not exist, return error
   if (!clientAccessToken) {

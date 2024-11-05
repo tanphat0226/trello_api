@@ -77,6 +77,7 @@ const verifyAccount = async (data) => {
 }
 
 const login = async (data) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     // Query user from DB
     const existUser = await userModel.findOneByEmail(data.email)
@@ -99,21 +100,48 @@ const login = async (data) => {
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      env.ACCESS_TOKEN_LIFE
-      // 5 // 5 seconds
+      // env.ACCESS_TOKEN_LIFE
+      5 // 5 seconds
     )
 
     const refreshToken = await JwtProvider.generateToken(
       userInfo,
       env.REFRESH_TOKEN_SECRET_SIGNATURE,
-      env.REFRESH_TOKEN_LIFE
+      // env.REFRESH_TOKEN_LIFE
+      30 // 15 seconds
     )
 
     // Returns the user data attached to the two generated tokens
     return { accessToken, refreshToken, ...pickUser(existUser) }
   } catch (error) {
-    throw new Error(error)
+    throw error
   }
 }
 
-export const userService = { createNew, verifyAccount, login }
+const refreshToken = async (data) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const refreshTokenDecoded = await JwtProvider.verifyToken(
+      data,
+      env.REFRESH_TOKEN_SECRET_SIGNATURE
+    )
+
+    const userInfo = {
+      _id: refreshTokenDecoded._id,
+      email: refreshTokenDecoded.email
+    }
+
+    const accessToken = await JwtProvider.generateToken(
+      userInfo,
+      env.ACCESS_TOKEN_SECRET_SIGNATURE,
+      // env.ACCESS_TOKEN_LIFE
+      5
+    )
+
+    return { accessToken }
+  } catch (error) {
+    throw error
+  }
+}
+
+export const userService = { createNew, verifyAccount, login, refreshToken }
