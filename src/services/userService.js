@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import bcrypt from 'bcryptjs'
 import { StatusCodes } from 'http-status-codes'
 import { v4 as uuidv4 } from 'uuid'
@@ -77,7 +78,6 @@ const verifyAccount = async (data) => {
 }
 
 const login = async (data) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     // Query user from DB
     const existUser = await userModel.findOneByEmail(data.email)
@@ -100,15 +100,15 @@ const login = async (data) => {
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      // env.ACCESS_TOKEN_LIFE
-      5 // 5 seconds
+      env.ACCESS_TOKEN_LIFE
+      // 5 // 5 seconds
     )
 
     const refreshToken = await JwtProvider.generateToken(
       userInfo,
       env.REFRESH_TOKEN_SECRET_SIGNATURE,
-      // env.REFRESH_TOKEN_LIFE
-      30 // 15 seconds
+      env.REFRESH_TOKEN_LIFE
+      // 30 // 15 seconds
     )
 
     // Returns the user data attached to the two generated tokens
@@ -119,7 +119,6 @@ const login = async (data) => {
 }
 
 const refreshToken = async (data) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const refreshTokenDecoded = await JwtProvider.verifyToken(
       data,
@@ -134,8 +133,8 @@ const refreshToken = async (data) => {
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      // env.ACCESS_TOKEN_LIFE
-      5
+      env.ACCESS_TOKEN_LIFE
+      // 5
     )
 
     return { accessToken }
@@ -144,4 +143,35 @@ const refreshToken = async (data) => {
   }
 }
 
-export const userService = { createNew, verifyAccount, login, refreshToken }
+const update = async (userId, reqBody) => {
+  try {
+    const existUser = await userModel.findOneById(userId)
+    if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found!')
+    if (!existUser.isActive)
+      throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your account is not active!')
+
+    // Khởi tạo kết quả updated User ban đầu là empty
+    let updatedUser = {}
+
+    // Case 1: Update password
+    if (reqBody.current_password && reqBody.new_password) {
+      // Check current password is correct or not
+      if (!bcrypt.compareSync(reqBody.current_password, existUser.password)) {
+        throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Current password is incorrect!')
+      }
+      //  If current password is correct, update new password in DB
+      updatedUser = await userModel.update(userId, {
+        password: bcrypt.hashSync(reqBody.new_password, 8)
+      })
+    } else {
+      // Case 2: Update other fields
+      updatedUser = await userModel.update(userId, reqBody)
+    }
+
+    return pickUser(updatedUser)
+  } catch (error) {
+    throw error
+  }
+}
+
+export const userService = { createNew, verifyAccount, login, refreshToken, update }
