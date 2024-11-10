@@ -60,7 +60,6 @@ const logout = async (req, res, next) => {
 
 const refreshToken = async (req, res, next) => {
   try {
-    console.log('Refresh Token:', req.cookies?.refreshToken)
     const result = await userService.refreshToken(req.cookies?.refreshToken)
 
     res.cookie('accessToken', result.accessToken, {
@@ -72,7 +71,6 @@ const refreshToken = async (req, res, next) => {
 
     res.status(StatusCodes.OK).json(result)
   } catch (error) {
-    console.error('Token refresh error:', error)
     next(new ApiError(StatusCodes.UNAUTHORIZED, 'Please Sign In!'))
   }
 }
@@ -80,7 +78,9 @@ const refreshToken = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const userId = req.jwtDecode._id
-    const updatedUser = await userService.update(userId, req.body)
+    const userAvatarFile = req.file
+    // console.log('CONTROLLER:', userAvatarFile)
+    const updatedUser = await userService.update(userId, req.body, userAvatarFile)
     res.status(StatusCodes.OK).json(updatedUser)
   } catch (error) {
     next(error)

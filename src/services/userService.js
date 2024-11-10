@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { env } from '~/config/environment'
 import { userModel } from '~/models/userModel'
 import { BrevoProvider } from '~/providers/BrevoProvider'
+import { cloudinaryProvider } from '~/providers/CloudinaryProvider'
 import { JwtProvider } from '~/providers/JwtProvider'
 import ApiError from '~/utils/ApiError'
 import { WEBSITE_DOMAIN } from '~/utils/constants'
@@ -143,7 +144,7 @@ const refreshToken = async (data) => {
   }
 }
 
-const update = async (userId, reqBody) => {
+const update = async (userId, reqBody, userAvatarFile) => {
   try {
     const existUser = await userModel.findOneById(userId)
     if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found!')
@@ -163,8 +164,17 @@ const update = async (userId, reqBody) => {
       updatedUser = await userModel.update(userId, {
         password: bcrypt.hashSync(reqBody.new_password, 8)
       })
+    } else if (userAvatarFile) {
+      // Case 2: Update file to Cloud Storage (Cloudinary)
+      const uploadResult = await cloudinaryProvider.streamUpload(userAvatarFile.buffer, 'users')
+      console.log(uploadResult)
+
+      // Save url of image file to DB
+      updatedUser = await userModel.update(userId, {
+        avatar: uploadResult.secure_url
+      })
     } else {
-      // Case 2: Update other fields
+      // Case 3: Update other fields
       updatedUser = await userModel.update(userId, reqBody)
     }
 
