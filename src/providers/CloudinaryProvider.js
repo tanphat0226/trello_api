@@ -17,7 +17,7 @@ cloudinary.config({
 const streamUpload = (fileBuffer, folderName) => {
   return new Promise((resolve, reject) => {
     // Create stream upload to cloudinary
-    let stream = cloudinary.uploader.upload_stream({ folder: folderName }, (error, result) => {
+    const stream = cloudinary.uploader.upload_stream({ folder: folderName }, (error, result) => {
       if (error) {
         reject(error)
       } else {
@@ -30,6 +30,6 @@ const streamUpload = (fileBuffer, folderName) => {
   })
 }
 
-export const cloudinaryProvider = {
+export const CloudinaryProvider = {
   streamUpload
 }

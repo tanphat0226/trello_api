@@ -78,7 +78,7 @@ const update = async (userId, updateData) => {
       .findOneAndUpdate(
         { _id: new ObjectId(userId) },
         { $set: updateData },
-        { returnNewDocument: 'after' }
+        { returnDocument: 'after' }
       )
     return result
   } catch (error) {

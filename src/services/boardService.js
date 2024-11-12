@@ -8,7 +8,7 @@ import ApiError from '~/utils/ApiError'
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from '~/utils/constants'
 import { slugify } from '~/utils/formatters'
 
-const createNew = async (reqBody) => {
+const createNew = async (userId, reqBody) => {
   try {
     // Xử lý logic data tùy đặc thù dự án
     const newBoard = {
@@ -17,7 +17,7 @@ const createNew = async (reqBody) => {
     }
 
     // Gọi tới tầng Model để xử lý bản ghi newBoard trong Database
-    const createdBoard = await boardModel.createNew(newBoard)
+    const createdBoard = await boardModel.createNew(userId, newBoard)
 
     // console.log(createdBoard)
 
@@ -35,9 +35,9 @@ const createNew = async (reqBody) => {
   }
 }
 
-const getDetails = async (boardId) => {
+const getDetails = async (userId, boardId) => {
   try {
-    const board = await boardModel.getDetails(boardId)
+    const board = await boardModel.getDetails(userId, boardId)
 
     if (!board) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')

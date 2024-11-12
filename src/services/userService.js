@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { env } from '~/config/environment'
 import { userModel } from '~/models/userModel'
 import { BrevoProvider } from '~/providers/BrevoProvider'
-import { cloudinaryProvider } from '~/providers/CloudinaryProvider'
+import { CloudinaryProvider } from '~/providers/CloudinaryProvider'
 import { JwtProvider } from '~/providers/JwtProvider'
 import ApiError from '~/utils/ApiError'
 import { WEBSITE_DOMAIN } from '~/utils/constants'
@@ -161,21 +161,21 @@ const update = async (userId, reqBody, userAvatarFile) => {
         throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Current password is incorrect!')
       }
       //  If current password is correct, update new password in DB
-      updatedUser = await userModel.update(userId, {
+      updatedUser = await userModel.update(existUser._id, {
         password: bcrypt.hashSync(reqBody.new_password, 8)
       })
     } else if (userAvatarFile) {
       // Case 2: Update file to Cloud Storage (Cloudinary)
-      const uploadResult = await cloudinaryProvider.streamUpload(userAvatarFile.buffer, 'users')
-      console.log(uploadResult)
+      const uploadResult = await CloudinaryProvider.streamUpload(userAvatarFile.buffer, 'users')
 
       // Save url of image file to DB
-      updatedUser = await userModel.update(userId, {
+      updatedUser = await userModel.update(existUser._id, {
         avatar: uploadResult.secure_url
       })
+      // console.log(updatedUser)
     } else {
       // Case 3: Update other fields
-      updatedUser = await userModel.update(userId, reqBody)
+      updatedUser = await userModel.update(existUser._id, reqBody)
     }
 
     return pickUser(updatedUser)
