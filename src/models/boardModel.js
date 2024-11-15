@@ -144,7 +144,7 @@ const update = async (boardId, updateData) => {
       .findOneAndUpdate(
         { _id: new ObjectId(boardId) },
         { $set: updateData },
-        { returnNewDocument: 'after' }
+        { returnDocument: 'after' }
       )
     return result
   } catch (error) {
