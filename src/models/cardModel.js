@@ -110,11 +110,36 @@ const deleteManyByColumnId = async (columnId) => {
   }
 }
 
+/**
+ * Adds a new comment to the beginning of the comments array for a specified card.
+ *
+ * @param {string} cardId - The ID of the card to which the comment will be added.
+ * @param {Object} commentData - The data of the comment to be added, including user details and comment content.
+ * @returns {Promise<Object>} - A promise that resolves to the updated card document after the comment is added.
+ * @throws {Error} - If an error occurs during the database update operation.
+ */
+const unshiftNewComment = async (cardId, commentData) => {
+  try {
+    const result = await GET_DB()
+      .collection(CARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        { _id: new ObjectId(cardId) },
+        // https://stackoverflow.com/questions/7936019/how-do-i-add-a-value-to-the-top-of-an-array-in-mongodb
+        { $push: { comments: { $each: [commentData], $position: 0 } } },
+        { returnDocument: 'after' }
+      )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
   createNew,
   findOneById,
   update,
-  deleteManyByColumnId
+  deleteManyByColumnId,
+  unshiftNewComment
 }

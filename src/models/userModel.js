@@ -1,13 +1,8 @@
 import Joi from 'joi'
 import { ObjectId } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
+import { USER_ROLE } from '~/utils/constants'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE } from '~/utils/validators'
-
-// Define user role
-const USER_ROLE = {
-  ADMIN: 'admin',
-  client: 'client'
-}
 
 // Define Collection (name & schema)
 const USER_COLLECTION_NAME = 'users'
@@ -15,7 +10,9 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   email: Joi.string().pattern(EMAIL_RULE).message(EMAIL_RULE_MESSAGE).required(),
   password: Joi.string().required(),
 
-  role: Joi.string().valid(USER_ROLE.ADMIN, USER_ROLE.client).default(USER_ROLE.client),
+  role: Joi.string()
+    .valid(...Object.values(USER_ROLE))
+    .default(USER_ROLE.client),
   username: Joi.string().required().trim().strict(),
   displayName: Joi.string().required().trim().strict(),
   avatar: Joi.string().default(null),
