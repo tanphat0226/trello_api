@@ -28,6 +28,29 @@ const createNewBoardInvitation = async (req, res, next) => {
   }
 }
 
+/**
+ * Gets all invitations of a user.
+ *
+ * This function takes the user ID from the request and queries the
+ * invitations database to find all invitations associated with the user.
+ * It returns the invitations as an array of objects in the response.
+ *
+ * @param {Object} req - The express request object.
+ * @param {Object} res - The express response object.
+ * @param {Function} next - The next middleware function in the stack.
+ * @returns {Object[]} The array of invitations associated with the user.
+ */
+const getInvitations = async (req, res, next) => {
+  try {
+    const userId = req.jwtDecode._id
+    const invitations = await invitationService.getInvitations(userId)
+    res.status(StatusCodes.OK).json(invitations)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const invitationController = {
-  createNewBoardInvitation
+  createNewBoardInvitation,
+  getInvitations
 }

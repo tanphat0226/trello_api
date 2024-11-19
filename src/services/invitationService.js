@@ -63,4 +63,23 @@ const createNewBoardInvitation = async (reqBody, inviterId) => {
   }
 }
 
-export const invitationService = { createNewBoardInvitation }
+const getInvitations = async (userId) => {
+  try {
+    const getInvitations = await invitationModel.findByUser(userId)
+    // console.log('getInvitations: ', getInvitations)
+
+    // Cause invitee, inviter and board are just one element in array, should be convert to json object before return
+    const resInvitation = getInvitations.map((invitation) => ({
+      ...invitation,
+      board: invitation.board[0] || {},
+      inviter: invitation.inviter[0] || {},
+      invitee: invitation.invitee[0] || {}
+    }))
+
+    return resInvitation
+  } catch (error) {
+    throw error
+  }
+}
+
+export const invitationService = { createNewBoardInvitation, getInvitations }
