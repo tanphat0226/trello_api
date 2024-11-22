@@ -8,6 +8,9 @@ import { env } from './config/environment'
 import { APIs_V1 } from './routes/v1'
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
 import cookieParser from 'cookie-parser'
+import http from 'http'
+import socketIo from 'socket.io'
+import { inviteUserToBoardSocket } from './sockets/inviteUserToBoardSocket'
 
 const START_SERVER = () => {
   const app = express()
@@ -35,14 +38,25 @@ const START_SERVER = () => {
   // Middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware)
 
+  // Create New Server wrap app of Express to make realtime with Socket.io
+  const server = http.createServer(app)
+  // Initialization io variable with server and cors
+  const io = socketIo(server, { cors: corsOptions })
+
+  io.on('connection', (socket) => {
+    inviteUserToBoardSocket(socket)
+  })
+
   // Production Environment (Render.com)
   if (env.BUILD_MODE === 'production') {
-    app.listen(process.env.PORT, () => {
+    // Use server.listen instead of app.listen cause server included express app and socket.io config
+    server.listen(process.env.PORT, () => {
       console.log(`3. Production: Back-end Server is running successfully at ${process.env.PORT}`)
     })
   } else {
     // Dev Environment
-    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+    // Use server.listen instead of app.listen cause server included express app and socket.io config
+    server.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
       console.log(
         `3. Local Dev: Hello ${env.AUTHOR}, I am running at https://${env.LOCAL_DEV_APP_HOST}:${env.LOCAL_DEV_APP_PORT}/`
       )
