@@ -191,7 +191,7 @@ const pullColumnOrderIds = async (column) => {
   }
 }
 
-const getBoards = async (userId, page, itemsPerPage) => {
+const getBoards = async (userId, page, itemsPerPage, quayFilters) => {
   try {
     const queryConditions = [
       // Condition 1: _destroy = false
@@ -204,6 +204,19 @@ const getBoards = async (userId, page, itemsPerPage) => {
         ]
       }
     ]
+
+    // Xử lý quayFilters theo từng case (nếu có)
+    if (quayFilters) {
+      Object.keys(quayFilters).forEach((key) => {
+        // Phân biệt chữ hoa chữ thường
+        // queryConditions.push({ [key]: { $regex: quayFilters[key] } })
+
+        // Không phân biệt chữ hoa chữ thường
+        queryConditions.push({ [key]: { $regex: new RegExp(quayFilters[key], 'i') } })
+      })
+    }
+
+    // console.log('queryConditions', queryConditions)
 
     const query = await GET_DB()
       .collection(BOARD_COLLECTION_NAME)

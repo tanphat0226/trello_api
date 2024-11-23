@@ -50,8 +50,10 @@ const getBoards = async (req, res, next) => {
   try {
     const userId = req.jwtDecode._id
     // Page and items per page from query
-    const { page, itemsPerPage } = req.query
-    const result = await boardService.getBoards(userId, page, itemsPerPage)
+    const { page, itemsPerPage, q } = req.query
+    const quayFilters = q
+
+    const result = await boardService.getBoards(userId, page, itemsPerPage, quayFilters)
 
     res.status(StatusCodes.OK).json(result)
   } catch (error) {

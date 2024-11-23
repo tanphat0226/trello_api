@@ -102,7 +102,7 @@ const moveCardToDifferentColumn = async (reqBody) => {
   }
 }
 
-const getBoards = async (userId, page, itemsPerPage) => {
+const getBoards = async (userId, page, itemsPerPage, quayFilters) => {
   try {
     if (!page) page = DEFAULT_PAGE
     if (!itemsPerPage) itemsPerPage = DEFAULT_ITEMS_PER_PAGE
@@ -110,7 +110,8 @@ const getBoards = async (userId, page, itemsPerPage) => {
     const result = await boardModel.getBoards(
       userId,
       parseInt(page, 10),
-      parseInt(itemsPerPage, 10)
+      parseInt(itemsPerPage, 10),
+      quayFilters
     )
 
     return result
